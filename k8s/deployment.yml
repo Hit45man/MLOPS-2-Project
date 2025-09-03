@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-ml-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iris-ml-api
+  template:
+    metadata:
+      labels:
+        app: iris-ml-api
+    spec:
+      containers:
+        - name: iris-container
+          image: rohikam/iris-ml-api:latest
+          ports:
+            - containerPort: 5000
