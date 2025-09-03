@@ -84,4 +84,4 @@ jobs:
 
     - name: Run K8s command to deploy
       run: |
-        kubectl apply -f ./k8s/ds.yml
+        kubectl apply -f ./k8s/ds.yml --validate=false
