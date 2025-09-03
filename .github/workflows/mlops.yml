@@ -57,7 +57,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install AWS CLI
       run: |
@@ -65,39 +65,23 @@ jobs:
         unzip awscliv2.zip
         sudo ./aws/install --update
 
-    - name: Configure AWS Credentials
+    - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
-        role-to-assume: arn:aws:iam::123456789012:role/github-actions-eks-role
-        role-session-name: github-actions-session
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-south-1
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
       with:
-        version: 'latest'
+        version: latest
 
-    - name: Verify AWS Authentication
-      run: aws sts get-caller-identity
-
-    - name: Update Kubeconfig for EKS
+    - name: Configure kubeconfig
       run: |
-        aws eks update-kubeconfig --region ap-south-1 --name ${{ secrets.EKS_CLUSTER_NAME }}
-        kubectl config current-context
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBE_CONFIG_DATA }}" > $HOME/.kube/config
 
-    - name: Debug kubectl config
+    - name: Run K8s command to deploy
       run: |
-        echo "Current context:"
-        kubectl config current-context
-        echo "Cluster info:"
-        kubectl cluster-info
-        echo "Config view:"
-        kubectl config view --minify
-
-    - name: Test connection
-      run: kubectl get nodes
-
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/deployment.yml --validate=false
-        kubectl apply -f k8s/service.yml   --validate=false
+        kubectl apply -f ./k8s/ds.yml
