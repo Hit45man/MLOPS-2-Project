@@ -77,10 +77,8 @@ jobs:
       with:
         version: 'latest'
 
-    - name: Configure Kubeconfig
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+    - name: Update Kubeconfig for EKS
+      run: aws eks update-kubeconfig --region ap-south-1 --name ${{ secrets.EKS_CLUSTER_NAME }}
 
     - name: Test connection
       run: kubectl get nodes
