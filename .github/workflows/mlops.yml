@@ -54,6 +54,7 @@ jobs:
     name: Deploy to Kubernetes
     needs: build-train-register
     runs-on: ubuntu-latest
+    if: ${{ secrets.KUBE_CONFIG_DATA != '' }}
 
     steps:
     - name: Checkout Code
@@ -66,8 +67,7 @@ jobs:
 
     - name: Configure Kubeconfig
       run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+        echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
 
     - name: Deploy to Kubernetes
       run: |
