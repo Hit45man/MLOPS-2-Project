@@ -10,7 +10,7 @@ on:
 
 jobs:
   train-register-model:
-    name: Ingest, Train, Register, and Build Docker Image
+    name: train-and-register-model
     runs-on: self-hosted
 
     steps:
