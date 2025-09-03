@@ -54,7 +54,6 @@ jobs:
     name: Deploy to Kubernetes
     needs: build-train-register
     runs-on: ubuntu-latest
-    if: ${{ secrets.KUBE_CONFIG_DATA != '' }}
 
     steps:
     - name: Checkout Code
