@@ -77,8 +77,13 @@ jobs:
       with:
         version: 'latest'
 
+    - name: Verify AWS Authentication
+      run: aws sts get-caller-identity
+
     - name: Update Kubeconfig for EKS
-      run: aws eks update-kubeconfig --region ap-south-1 --name ${{ secrets.EKS_CLUSTER_NAME }}
+      run: |
+        aws eks update-kubeconfig --region ap-south-1 --name ${{ secrets.EKS_CLUSTER_NAME }}
+        kubectl config current-context
 
     - name: Test connection
       run: kubectl get nodes
